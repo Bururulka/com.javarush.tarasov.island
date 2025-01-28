@@ -38,7 +38,7 @@ public class Application {
         return creatureSet.stream().skip(randomIndex).findFirst().orElse(null);
     }
     public static Direction getRandomDirection() {
-        return Direction.values()[rand.nextInt(Direction.values().length)];
+         return Direction.values()[rand.nextInt(Direction.values().length)];
     }
     public static Animal getRandomCretureReproduce(Set<Creature> creatureSet) {
         int randomIndex = rand.nextInt(creatureSet.size());
