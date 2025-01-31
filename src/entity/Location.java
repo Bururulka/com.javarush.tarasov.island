@@ -5,55 +5,128 @@ import entity.creature.animal.Animal;
 import entity.creature.animal.herbivore.Horse;
 import entity.creature.animal.predator.Wolf;
 import entity.creature.plant.Plant;
-import util.AnimalsType;
+import util.Direction;
+import util.MyRandom;
 import util.Settings;
 
 import java.util.*;
 
+// ЛОКАЦИЯ ДОЛЖНА ЗНАТЬ ТЕКУЩЕЕ КОЛ-ВО ЖИВОТНЫХ КОНКРЕТНОГО ВИДА
+// НА СЕБЕ
+// МАССИВ?
+
+// ЛОКАЦИЮ ТОЖЕ НУЖНО ПРАВИЛЬНО СОЗДАТЬ -
+// ИНИЦИАЛИЗИРОВАВ ЕЕ НА СТАРТЕ КАКИМ-ТО КОЛ-ВОМ ЖИВОТНЫХ И РАСТЕНИЙ
+
 public class Location {
-    public Wolf[] wolfArray = new Wolf[30];
-    public Plant[] plantArray = new Plant[200];
-    public Horse[] horseArray = new Horse[20];
-    public Set<Creature> creatureSet = new HashSet<>();
+    public List wolfList;
+    public List plantList;
+    public List horseList;
+    public Map<String, List<Creature>>creatureMap = new HashMap<>();
+    public Map<String, List<Creature>>newCreatureMap = new HashMap<>();
+    public Map<String, List<Creature>>removeCreatureMap = new HashMap<>();
     public Island island;
-    Random rand = new Random();
-    int x;
-    int y;
-    public Location(int x, int y, Island island){
-        Settings settings = new Settings();
+    public int x;
+    public int y;
+
+    public Location(Island island, int x, int y){
         this.island = island;
         this.x = x;
         this.y = y;
-        for (int i = 0; i < rand.nextInt(0,wolfArray.length); i++){
-            wolfArray[i] = (Wolf) createAnimal(AnimalsType.WOLF, this);
-        }
-        for (int i = 0; i < plantArray.length; i++){
-            plantArray[i] = new Plant();
-        }
-        for (int i = 0; i < rand.nextInt(0,horseArray.length); i++){
-            horseArray[i] = (Horse) createAnimal(AnimalsType.HORSE, this);
-        }
-        creatureSet.addAll(Arrays.asList(wolfArray));
-        creatureSet.addAll(Arrays.asList(horseArray));
-        creatureSet.addAll(Arrays.asList(plantArray));
 
-    }
-    public Animal createAnimal(AnimalsType type, Location location){
-        switch (type){
-            case WOLF:
-                return new Wolf();
-            case HORSE:
-                return new Horse();
-            default:
-                return null;
+        wolfList = new ArrayList();
+        Location location = this;
+        for (int i = 0; i < MyRandom.random(0, Settings.maxCountWolfOnLocation); i++){
+            wolfList.add(new Wolf(location));
         }
+        creatureMap.put("Wolf", wolfList);
+
+        plantList = new ArrayList();
+        for (int i = 0; i < Settings.maxCountPlantOnLocation; i++){
+            plantList.add(new Plant(location));
+        }
+        creatureMap.put("Plant", plantList);
+        horseList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountHorseOnLocation); i++){
+            horseList.add(new Horse(location));
+        }
+        creatureMap.put("Horse", horseList);
     }
 
-    // ЛОКАЦИЯ ДОЛЖНА ЗНАТЬ ТЕКУЩЕЕ КОЛ-ВО ЖИВОТНЫХ КОНКРЕТНОГО ВИДА
-    // НА СЕБЕ
-    // МАССИВ?
+    public void AnimalsDeals(){
 
-    // ЛОКАЦИЮ ТОЖЕ НУЖНО ПРАВИЛЬНО СОЗДАТЬ -
-    // ИНИЦИАЛИЗИРОВАВ ЕЕ НА СТАРТЕ КАКИМ-ТО КОЛ-ВОМ ЖИВОТНЫХ И РАСТЕНИЙ
+        boolean needToRemove = false;
+        List<Creature>creaturesForRemoval = new ArrayList<>();
 
+        Iterator<Map.Entry<String, List<Creature>>>creatureIterator = creatureMap.entrySet().iterator();
+        while (creatureIterator.hasNext()){
+            Map.Entry<String, List<Creature>> creature = creatureIterator.next();
+            List<Creature> creatures = creature.getValue();
+            ListIterator<Creature> listIterator = creatures.listIterator();
+
+            while (listIterator.hasNext()) {
+                Creature curentCreature = listIterator.next();
+                if (curentCreature instanceof Animal) {
+                    Animal animal = (Animal) curentCreature;
+                    animal.eat();
+                    Creature newCreature = animal.reproduce();
+                    listIterator.add(newCreature);
+                    animal.move(MyRandom.getRandomDirection());
+                }
+            }
+
+        }
+    }
+    public Location getNextLocation(Direction direction, int speed){
+
+        Location currentLocation = this;
+        Location[][] locations = this.island.getLocations();
+
+        for(int i = 0; i < speed; i++){
+            switch (direction){
+
+                case UP -> {
+                    if (y < Settings.rowsCount){
+                        return locations[x][y+1];
+                    } else {
+                        return null;
+                    }
+                }
+
+                case DOWN -> {
+                    if (y > 0){
+                        return locations[x][y-1];
+                    } else {
+                        return null;
+                    }
+                }
+
+                case LEFT -> {
+                    if (x > 0){
+                        return locations[x-1][y];
+                    } else {
+                        return null;
+                    }
+                }
+
+                case RIGHT ->  {
+
+                    if (x < Settings.columnsCount){
+                        return locations[x+1][y];
+                    } else {
+                        return null;
+                    }
+                }
+
+                default -> {
+                    return null;
+                }
+            }
+        }
+
+        return null;
+    }
 }
+
+
+
