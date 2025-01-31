@@ -39,9 +39,16 @@ public abstract class Creature {
         }
     }
     public void die(Location location){
-        List<? extends Creature> creatures = location.creatureMap.get(this.getClass().getSimpleName());
-        creatures.remove(this);
-        System.out.println(this.getClass().getSimpleName() + " is die");
-        System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
-    };
+        List<? extends Creature> creatures = creatureLocation.creatureMap.get(this.getClass().getSimpleName());
+        if (this instanceof Plant) {
+            creatures.remove(this);
+            System.out.println(this.getClass().getSimpleName() + " is die");
+            System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
+        } else if (this instanceof Animal) {
+            Animal animal = (Animal) this;
+            animal.isRemove = true;
+            System.out.println(this.getClass().getSimpleName() + " is die");
+            System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
+        }
+    }
 }

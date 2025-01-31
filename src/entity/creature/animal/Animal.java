@@ -18,33 +18,40 @@ public abstract class Animal extends Creature {
     // СЫТОСТЬ satiety = ? вес
     // ВЕС ЖИВОТНОГО
     // СКОРОСТЬ ПЕРЕМЕЩЕНИЯ
-    boolean isMove = false;
-    boolean isNew = false;
+    public boolean isRemove = false;
+    public boolean isNew = false;
     Settings settings = new Settings();
     Random rand = new Random();
     public Animal(double maxWeight, int maxCountInCell, int maxSpeed, double maxFood, Location location) {
         super(maxWeight, maxCountInCell, maxSpeed, maxFood, location);
+        boolean isRemove = false;
+        boolean isNew = false;
     }
 
     public void eat(){
-        double needFood = getNeedFood();
-        while (needFood > 1){
-            try {
-                Creature c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap);
+        Creature c;
+        try {
+            double needFood = getNeedFood();
+
+            if (this.getClass().getSuperclass() == Herbivore.class) {
+                while (needFood > 1) {
+                c = this.creatureLocation.creatureMap.get(Plant.class).getFirst();
+                needFood = getNeedFood();
+                double foodWeight = c.getWeight();
+                double delta = Math.min(foodWeight, needFood);
+                System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
+                setWeight(getWeight() + delta, this.creatureLocation);
+                c.setWeight(foodWeight - delta, c.creatureLocation);
+                }
+            }
+
+            if (this.getClass().getSuperclass() == Predator.class) {
+                c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, true);
                 int probability = settings.getProbabilityEat(this, c);
                 int ints = rand.nextInt(0, 100);
                 if (ints <= probability) {
-                    if (this instanceof Herbivore && c instanceof Plant) {
-                        needFood = getNeedFood();
-                        double foodWeight = c.getWeight();
-                        double delta = Math.min(foodWeight, needFood);
-                        System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
-                        setWeight(getWeight() + delta, this.creatureLocation);
-                        c.setWeight(foodWeight - delta, c.creatureLocation);
-                    }
-
-
-                    if (this instanceof Predator && c instanceof Herbivore) {
+                    Animal animal = (Animal) c;
+                    if (!(animal.isRemove)) {
                         needFood = getNeedFood();
                         double foodWeight = c.getWeight();
                         double delta = Math.min(foodWeight, needFood);
@@ -53,13 +60,14 @@ public abstract class Animal extends Creature {
                         System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
                     }
                 }
-            } catch (IllegalArgumentException e){
-                return;
             }
+        } catch (Exception e) {
+            return;
         }
+
     }
 
-    public Creature move(Direction dir){
+    public void move(Direction dir){
         Location nextLocation = null;
         int currentSpeed = MyRandom.random(0,this.creatureMaxSpeed);
 
@@ -67,55 +75,70 @@ public abstract class Animal extends Creature {
         nextLocation = currentLocation.getNextLocation(dir, currentSpeed);
 
         if (nextLocation != null){
-            Map<String, List<Creature>> creatureMapNext = nextLocation.creatureMap;
-//            List<Creature> creaturesCurrent = creatureLocation.creatureMap.get(this.getClass().getSimpleName());
-            List<Creature> creaturesNext = creatureMapNext.get(this.getClass().getSimpleName());
+            Map<Class, List<Creature>> creatureMapNext = nextLocation.creatureMap;
+            List<Creature> creaturesNext = creatureMapNext.get(this.getClass());
 
             if (creaturesNext.size() < this.creatureMaxCountInCell){
                 creaturesNext.add(this);
-//                creaturesCurrent.remove(this);
-                return this;
+                this.creatureLocation = nextLocation;
+                this.isRemove = true;
             }
         } else {
             System.out.println(this.getClass().getSimpleName() + " не удалось никуда сходить");
         }
-        return null;
     }
 
 
-    public Creature reproduce(){
-        Map<String, List<Creature>> creatureMap = this.creatureLocation.creatureMap;
-        String s = this.getClass().getSimpleName();
+    public void reproduce(){
+        Map<Class, List<Creature>> creatureMap = this.creatureLocation.creatureMap;
+        Map<Class, List<Creature>> newCreatureMap = this.creatureLocation.newCreatureMap;
+        List<Creature> newCreatures = new ArrayList<>();
+        Class<? extends Creature> s = this.getClass();
         List<Creature> list = creatureMap.get(s);
-        ListIterator<Creature> iterator = list.listIterator();
-        if (list.size() > 2){
-//            try{
-//                Class c = Class.forName(s);
-//                Object object = c.newInstance();
-//                Creature newCreature = (Creature) object;
-//                List.add(newCreature);
-//                this.creatureLocation.creatureMap.put(s,List);
-//                System.out.println("Родился новый " + s);
-//            } catch (Exception e){
-//                System.out.println(s + " не смог размножиться");
-//            }
-            switch (s){
+        List<Creature> newList = newCreatureMap.get(s);
+        if (list.size() > 1){
+            switch (s.getSimpleName()){
                 case "Horse" ->{
-                    Horse horse = new Horse(this.creatureLocation);
-//                    iterator.add(new Horse(this.creatureLocation));
-                    System.out.println("Родился новый " + s);
-                    return horse;
+                    int creatureCount = 0;
+                    if (this.creatureLocation.newCreatureMap.get(Horse.class) != null){
+                        creatureCount = (this.creatureLocation.creatureMap.get(Horse.class).size() + this.creatureLocation.newCreatureMap.get(Horse.class).size());
+                    } else {
+                        creatureCount = this.creatureLocation.creatureMap.get(Horse.class).size();
+                    }
+                    if  ( creatureCount < this.creatureMaxCountInCell) {
+                        Horse horse = new Horse(this.creatureLocation);
+                        horse.isNew = true;
+                        newCreatures.add(horse);
+                        if (this.creatureLocation.newCreatureMap.get(Horse.class) == null) {
+                            this.creatureLocation.newCreatureMap.put(Horse.class, newCreatures);
+                        } else {
+                            this.creatureLocation.newCreatureMap.get(Horse.class).addAll(newCreatures);
+                        }
+                        System.out.println("Родился новый " + s);
+                    }
                 }
                 case "Wolf" ->{
-                    Wolf wolf = new Wolf(this.creatureLocation);
-//                    iterator.add(new Wolf(this.creatureLocation));
-                    System.out.println("Родился новый " + s);
-                    return wolf;
+                    int creatureCount = 0;
+                    if (this.creatureLocation.newCreatureMap.get(Wolf.class) != null){
+                        creatureCount = (this.creatureLocation.creatureMap.get(Wolf.class).size() + this.creatureLocation.newCreatureMap.get(Wolf.class).size());
+                    } else {
+                        creatureCount = this.creatureLocation.creatureMap.get(Wolf.class).size();
+                    }
+                    if  ( creatureCount < this.creatureMaxCountInCell) {
+                        Wolf wolf = new Wolf(this.creatureLocation);
+                        wolf.isNew = true;
+                        newCreatures.add(wolf);
+                        if (this.creatureLocation.newCreatureMap.get(Wolf.class) == null) {
+                            this.creatureLocation.newCreatureMap.put(Wolf.class, newCreatures);
+                        } else {
+                            this.creatureLocation.newCreatureMap.get(Wolf.class).addAll(newCreatures);
+                        }
+                        System.out.println("Родился новый " + s);
+                    }
                 }
                 default -> {}
             }
         }
-        return null;
     }
 
 

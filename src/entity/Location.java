@@ -22,9 +22,9 @@ public class Location {
     public List wolfList;
     public List plantList;
     public List horseList;
-    public Map<String, List<Creature>>creatureMap = new HashMap<>();
-    public Map<String, List<Creature>>newCreatureMap = new HashMap<>();
-    public Map<String, List<Creature>>removeCreatureMap = new HashMap<>();
+    public Map<Class, List<Creature>>creatureMap = new HashMap<>();
+    public Map<Class, List<Creature>>newCreatureMap = new HashMap<>();
+    public Map<Class, List<Creature>>removeCreatureMap = new HashMap<>();
     public Island island;
     public int x;
     public int y;
@@ -39,28 +39,26 @@ public class Location {
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountWolfOnLocation); i++){
             wolfList.add(new Wolf(location));
         }
-        creatureMap.put("Wolf", wolfList);
+        creatureMap.put(Wolf.class, wolfList);
 
         plantList = new ArrayList();
         for (int i = 0; i < Settings.maxCountPlantOnLocation; i++){
             plantList.add(new Plant(location));
         }
-        creatureMap.put("Plant", plantList);
+        creatureMap.put(Plant.class, plantList);
         horseList = new ArrayList();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountHorseOnLocation); i++){
             horseList.add(new Horse(location));
         }
-        creatureMap.put("Horse", horseList);
+        creatureMap.put(Horse.class, horseList);
     }
 
     public void AnimalsDeals(){
 
-        boolean needToRemove = false;
-        List<Creature>creaturesForRemoval = new ArrayList<>();
+        Iterator<Map.Entry<Class, List<Creature>>>creatureIterator = creatureMap.entrySet().iterator();
 
-        Iterator<Map.Entry<String, List<Creature>>>creatureIterator = creatureMap.entrySet().iterator();
         while (creatureIterator.hasNext()){
-            Map.Entry<String, List<Creature>> creature = creatureIterator.next();
+            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
             List<Creature> creatures = creature.getValue();
             ListIterator<Creature> listIterator = creatures.listIterator();
 
@@ -68,14 +66,35 @@ public class Location {
                 Creature curentCreature = listIterator.next();
                 if (curentCreature instanceof Animal) {
                     Animal animal = (Animal) curentCreature;
+                    animal.isRemove = false;
+                    animal.isNew = false;
                     animal.eat();
-                    Creature newCreature = animal.reproduce();
-                    listIterator.add(newCreature);
+                    animal.reproduce();
                     animal.move(MyRandom.getRandomDirection());
                 }
             }
 
         }
+
+        while (creatureIterator.hasNext()){
+            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
+            List<Creature> creatures = creature.getValue();
+            ListIterator<Creature> listIterator = creatures.listIterator();
+
+            while (listIterator.hasNext()) {
+                Creature curentCreature = listIterator.next();
+                if (curentCreature instanceof Animal) {
+                    Animal animal = (Animal) curentCreature;
+                    if(animal.isRemove){
+                        listIterator.remove();
+                    }
+                }
+            }
+
+        }
+
+        creatureMap.putAll(newCreatureMap);
+
     }
     public Location getNextLocation(Direction direction, int speed){
 
@@ -86,7 +105,7 @@ public class Location {
             switch (direction){
 
                 case UP -> {
-                    if (y < Settings.rowsCount){
+                    if (y < Settings.rowsCount-1){
                         return locations[x][y+1];
                     } else {
                         return null;
@@ -94,7 +113,7 @@ public class Location {
                 }
 
                 case DOWN -> {
-                    if (y > 0){
+                    if (y > 1){
                         return locations[x][y-1];
                     } else {
                         return null;
@@ -102,7 +121,7 @@ public class Location {
                 }
 
                 case LEFT -> {
-                    if (x > 0){
+                    if (x > 1){
                         return locations[x-1][y];
                     } else {
                         return null;
@@ -111,7 +130,7 @@ public class Location {
 
                 case RIGHT ->  {
 
-                    if (x < Settings.columnsCount){
+                    if (x < Settings.columnsCount-1){
                         return locations[x+1][y];
                     } else {
                         return null;
