@@ -11,6 +11,7 @@ import util.Direction;
 import util.MyRandom;
 import util.Settings;
 
+import java.lang.reflect.*;
 import java.util.*;
 
 public abstract class Animal extends Creature {
@@ -26,6 +27,30 @@ public abstract class Animal extends Creature {
         super(maxWeight, maxCountInCell, maxSpeed, maxFood, location);
         boolean isRemove = false;
         boolean isNew = false;
+    }
+
+    public  Animal createAnimal()  {
+
+        Class clazz = null;
+        Animal animal = null;
+
+        try {
+            clazz = Class.forName(this.getClass().getName());
+            Class[] animalClassParams = {Location.class};
+            animal = (Animal) clazz.getConstructor(animalClassParams).newInstance(this.creatureLocation);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return animal;
     }
 
     public void eat(){
@@ -87,6 +112,7 @@ public abstract class Animal extends Creature {
                 creaturesNext.add(this);
                 this.creatureLocation = nextLocation;
                 this.isRemove = true;
+                this.decreaseHealth();
             }
         } else {
             System.out.println(this.getClass().getSimpleName() + " не удалось никуда сходить");
@@ -101,47 +127,30 @@ public abstract class Animal extends Creature {
         Class<? extends Creature> s = this.getClass();
         List<Creature> list = creatureMap.get(s);
         List<Creature> newList = newCreatureMap.get(s);
+        Animal animal = null;
         if (list.size() > 1){
-            switch (s.getSimpleName()){
-                case "Horse" ->{
-                    int creatureCount = 0;
-                    if (this.creatureLocation.newCreatureMap.get(Horse.class) != null){
-                        creatureCount = (this.creatureLocation.creatureMap.get(Horse.class).size() + this.creatureLocation.newCreatureMap.get(Horse.class).size());
-                    } else {
-                        creatureCount = this.creatureLocation.creatureMap.get(Horse.class).size();
-                    }
-                    if  ( creatureCount < this.creatureMaxCountInCell) {
-                        Horse horse = new Horse(this.creatureLocation);
-                        horse.isNew = true;
-                        newCreatures.add(horse);
-                        if (this.creatureLocation.newCreatureMap.get(Horse.class) == null) {
-                            this.creatureLocation.newCreatureMap.put(Horse.class, newCreatures);
-                        } else {
-                            this.creatureLocation.newCreatureMap.get(Horse.class).addAll(newCreatures);
-                        }
-                        System.out.println("Родился новый " + s);
-                    }
+
+            int creatureCount = 0;
+
+            if (this.creatureLocation.newCreatureMap.get(this.getClass()) != null){
+                creatureCount = (this.creatureLocation.creatureMap.get(this.getClass()).size() + this.creatureLocation.newCreatureMap.get(this.getClass()).size());
+            } else {
+                creatureCount = this.creatureLocation.creatureMap.get(this.getClass()).size();
+            }
+            if  ( creatureCount < this.creatureMaxCountInCell) {
+                try {
+                    animal = createAnimal();
+                } catch (Exception e){
+
                 }
-                case "Wolf" ->{
-                    int creatureCount = 0;
-                    if (this.creatureLocation.newCreatureMap.get(Wolf.class) != null){
-                        creatureCount = (this.creatureLocation.creatureMap.get(Wolf.class).size() + this.creatureLocation.newCreatureMap.get(Wolf.class).size());
-                    } else {
-                        creatureCount = this.creatureLocation.creatureMap.get(Wolf.class).size();
-                    }
-                    if  ( creatureCount < this.creatureMaxCountInCell) {
-                        Wolf wolf = new Wolf(this.creatureLocation);
-                        wolf.isNew = true;
-                        newCreatures.add(wolf);
-                        if (this.creatureLocation.newCreatureMap.get(Wolf.class) == null) {
-                            this.creatureLocation.newCreatureMap.put(Wolf.class, newCreatures);
-                        } else {
-                            this.creatureLocation.newCreatureMap.get(Wolf.class).addAll(newCreatures);
-                        }
-                        System.out.println("Родился новый " + s);
-                    }
+                animal.isNew = true;
+                newCreatures.add(animal);
+                if (this.creatureLocation.newCreatureMap.get(this.getClass()) == null) {
+                    this.creatureLocation.newCreatureMap.put(this.getClass(), newCreatures);
+                } else {
+                    this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
                 }
-                default -> {}
+                System.out.println("Родился новый " + animal.getClass().getSimpleName());
             }
         }
     }
@@ -151,5 +160,9 @@ public abstract class Animal extends Creature {
         return Math.min(
                 creatureMaxFood,
                 this.creatureMaxWeight - this.creatureWeight);
+    }
+
+    private void decreaseHealth(){
+        this.creatureWeight = this.creatureWeight - ((this.creatureWeight/100)*10);
     }
 }
