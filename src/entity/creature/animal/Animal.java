@@ -69,7 +69,12 @@ public abstract class Animal extends Creature {
 
     public void move(Direction dir){
         Location nextLocation = null;
-        int currentSpeed = MyRandom.random(0,this.creatureMaxSpeed);
+        int currentSpeed;
+        if(this.creatureMaxSpeed !=0) {
+            currentSpeed = MyRandom.random(0, this.creatureMaxSpeed);
+        } else {
+            currentSpeed = 0;
+        }
 
         Location currentLocation = this.creatureLocation;
         nextLocation = currentLocation.getNextLocation(dir, currentSpeed);

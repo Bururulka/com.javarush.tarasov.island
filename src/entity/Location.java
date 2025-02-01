@@ -2,8 +2,8 @@ package entity;
 
 import entity.creature.Creature;
 import entity.creature.animal.Animal;
-import entity.creature.animal.herbivore.Horse;
-import entity.creature.animal.predator.Wolf;
+import entity.creature.animal.herbivore.*;
+import entity.creature.animal.predator.*;
 import entity.creature.plant.Plant;
 import util.Direction;
 import util.MyRandom;
@@ -20,8 +20,21 @@ import java.util.*;
 
 public class Location {
     public List wolfList;
+    public List boaList;
+    public List bearList;
+    public List foxList;
+    public List eagleList;
     public List plantList;
     public List horseList;
+    public List boarList;
+    public List buffaloList;
+    public List caterpillarList;
+    public List deerList;
+    public List duckList;
+    public List goatList;
+    public List mouseList;
+    public List rabbitList;
+    public List sheepList;
     public Map<Class, List<Creature>>creatureMap = new HashMap<>();
     public Map<Class, List<Creature>>newCreatureMap = new HashMap<>();
     public Map<Class, List<Creature>>removeCreatureMap = new HashMap<>();
@@ -33,24 +46,90 @@ public class Location {
         this.island = island;
         this.x = x;
         this.y = y;
+        Location location = this;
 
         wolfList = new ArrayList();
-        Location location = this;
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountWolfOnLocation); i++){
             wolfList.add(new Wolf(location));
         }
         creatureMap.put(Wolf.class, wolfList);
+        boaList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0, Settings.maxCountBoaOnLocation); i++){
+            boaList.add(new Boa(location));
+        }
+        creatureMap.put(Boa.class, boaList);
+        foxList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0, Settings.maxCountFoxOnLocation); i++){
+            foxList.add(new Fox(location));
+        }
+        creatureMap.put(Fox.class, foxList);
+        bearList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0, Settings.maxCountBearOnLocation); i++){
+            bearList.add(new Bear(location));
+        }
+        creatureMap.put(Bear.class, bearList);
+        eagleList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0, Settings.maxCountEagleOnLocation); i++){
+            boaList.add(new Eagle(location));
+        }
+        creatureMap.put(Eagle.class, eagleList);
 
         plantList = new ArrayList();
         for (int i = 0; i < Settings.maxCountPlantOnLocation; i++){
             plantList.add(new Plant(location));
         }
         creatureMap.put(Plant.class, plantList);
+
         horseList = new ArrayList();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountHorseOnLocation); i++){
             horseList.add(new Horse(location));
         }
         creatureMap.put(Horse.class, horseList);
+        deerList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountDeerOnLocation); i++){
+            deerList.add(new Horse(location));
+        }
+        creatureMap.put(Deer.class, deerList);
+        rabbitList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountRabbitOnLocation); i++){
+            rabbitList.add(new Rabbit(location));
+        }
+        creatureMap.put(Rabbit.class, rabbitList);
+        mouseList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountMouseOnLocation); i++){
+            mouseList.add(new Mouse(location));
+        }
+        creatureMap.put(Mouse.class, mouseList);
+        goatList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountGoatOnLocation); i++){
+            goatList.add(new Goat(location));
+        }
+        creatureMap.put(Goat.class, goatList);
+        sheepList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountSheepOnLocation); i++){
+            sheepList.add(new Sheep(location));
+        }
+        creatureMap.put(Sheep.class, sheepList);
+        boarList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountBoarOnLocation); i++){
+            boarList.add(new Boar(location));
+        }
+        creatureMap.put(Boar.class, boarList);
+        buffaloList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountBuffaloOnLocation); i++){
+            buffaloList.add(new Buffalo(location));
+        }
+        creatureMap.put(Buffalo.class, buffaloList);
+        duckList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountDuckOnLocation); i++){
+            duckList.add(new Duck(location));
+        }
+        creatureMap.put(Duck.class, duckList);
+        caterpillarList = new ArrayList();
+        for (int i = 0; i < MyRandom.random(0,Settings.maxCountCaterpillarOnLocation); i++){
+            caterpillarList.add(new Caterpillar(location));
+        }
+        creatureMap.put(Caterpillar.class, caterpillarList);
     }
 
     public void AnimalsDeals(){

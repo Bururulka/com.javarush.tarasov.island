@@ -2,6 +2,7 @@ package entity.creature;
 
 import entity.Location;
 import entity.creature.animal.Animal;
+import entity.creature.animal.herbivore.Caterpillar;
 import entity.creature.plant.Plant;
 import util.MyRandom;
 
@@ -22,7 +23,11 @@ public abstract class Creature {
             creatureMaxSpeed = maxSpeed;
             creatureLocation = location;
         if (this instanceof Animal) {
-            creatureWeight = MyRandom.random(maxWeight-maxFood, maxWeight);
+            if(this instanceof Caterpillar) {
+                creatureWeight = maxWeight;
+            } else {
+                creatureWeight = MyRandom.random(maxWeight - maxFood, maxWeight);
+            }
         } else if (this instanceof Plant) {
             creatureWeight = maxWeight;
         }
