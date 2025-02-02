@@ -23,36 +23,38 @@ public class MyRandom {
         return random(0, 100) < percentProbably;
     }
 
-    public static Creature getRandomCreature(Map<Class, List<Creature>> creatureMap, boolean herbivore){
+    public static Creature getRandomCreature(Map<Class, List<Creature>> creatureMap, Creature eater, boolean herbivore){
         Set<Class> creatureTypes = creatureMap.keySet();
+        Set<String>creatureTypesForEat = new HashSet<>();
         Creature randomCreature = null;
-        Class s = null;
+        Class s ;
+        String creatureType;
         int minSize = 0;
 
         Iterator<Class> iterator = creatureTypes.iterator();
         while (iterator.hasNext()) {
             s = iterator.next();
-            if (s.getSuperclass() == Herbivore.class){
+            if (creatureMap.get(s).size()>1){
                 minSize = creatureMap.get(s).size();
+                Class eaterType = eater.getClass();
+                int x = Settings.getProbabilityEat(eaterType, s);
+                if (x!=0) {
+                    creatureTypesForEat.add(s.getName());
+                }
             }
         }
-        if(minSize != 0) {
-            if (creatureTypes != null) {
-                s = null;
-                s = creatureTypes.stream().filter(c -> c.getSuperclass() == Herbivore.class).findAny().get();
-                List<? extends Creature> randomList = creatureMap.get(s);
-                if (randomList.get(MyRandom.random(0, randomList.size() - 1)) instanceof Herbivore) {
-                    randomCreature = randomList.get(MyRandom.random(0, randomList.size() - 1));
-                } else {
-                    randomCreature = MyRandom.getRandomCreature(creatureMap, true);
-                }
-            } else {
+        if(minSize != 0 && !creatureTypesForEat.isEmpty()) {
+            creatureType = creatureTypesForEat.stream().skip(random(0, creatureTypesForEat.size())).findFirst().get();
+            try {
+                Class clazz = Class.forName(creatureType);
+                List<? extends Creature> randomList = creatureMap.get(clazz);
+                return  randomCreature = randomList.get(MyRandom.random(0, randomList.size() - 1));
+            } catch (Exception e){
                 return null;
             }
         } else {
             return null;
         }
-        return randomCreature;
     }
 
     public static Creature getRandomCreature(Map<String, List<Creature>> creatureMap){
@@ -63,6 +65,7 @@ public class MyRandom {
     }
 
     public static Direction getRandomDirection(){
-        return Direction.values()[ThreadLocalRandom.current().nextInt(Direction.values().length)];
+        return Direction.values()[random(0,Direction.values().length-1)];
     }
+
 }

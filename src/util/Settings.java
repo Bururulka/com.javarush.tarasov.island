@@ -29,128 +29,132 @@ public class Settings {
   public final static int maxCountBoarOnLocation = 50;
   public final static int maxCountDuckOnLocation = 200;
 
+  private Settings(){
 
-  public int getProbabilityEat(Creature eater, Creature eatable) {
-    if (eater instanceof Wolf) {
-      if (eatable instanceof Horse) {
+  }
+
+  public static int getProbabilityEat(Class eater, Class eatable) {
+    if (eater.equals(Wolf.class)) {
+      if (eatable.equals(Horse.class)) {
         return 10;
       }
-      if (eatable instanceof Deer) {
+      if (eatable.equals(Deer.class)) {
         return 15;
       }
-      if (eatable instanceof Rabbit) {
+      if (eatable.equals(Rabbit.class)) {
         return 60;
       }
-      if (eatable instanceof Mouse) {
+      if (eatable.equals(Mouse.class)) {
         return 80;
       }
-      if (eatable instanceof Goat) {
+      if (eatable.equals(Goat.class)) {
         return 60;
       }
-      if (eatable instanceof Sheep) {
+      if (eatable.equals(Sheep.class)) {
         return 70;
       }
-      if (eatable instanceof Boar) {
+      if (eatable.equals(Boar.class)) {
         return 15;
       }
-      if (eatable instanceof Buffalo) {
+      if (eatable.equals(Buffalo.class)) {
         return 10;
       }
-      if (eatable instanceof Duck) {
+      if (eatable.equals(Duck.class)) {
         return 40;
       }
     }
 
-    if (eater instanceof Boa) {
-      if (eatable instanceof Fox) {
+    if (eater.equals(Boa.class)) {
+      if (eatable.equals(Fox.class)) {
         return 15;
       }
-      if (eatable instanceof Rabbit) {
+      if (eatable.equals(Rabbit.class)) {
         return 20;
       }
-      if (eatable instanceof Mouse) {
+      if (eatable.equals(Mouse.class)) {
         return 40;
       }
-      if (eatable instanceof Duck) {
+      if (eatable.equals(Duck.class)) {
         return 10;
       }
     }
 
-    if (eater instanceof Fox) {
-      if (eatable instanceof Rabbit) {
+    if (eater.equals(Fox.class)) {
+      if (eatable.equals(Rabbit.class)) {
         return 70;
       }
-      if (eatable instanceof Mouse) {
+      if (eatable.equals(Mouse.class)) {
         return 90;
       }
-      if (eatable instanceof Duck) {
+      if (eatable.equals(Duck.class)) {
         return 60;
       }
-      if (eatable instanceof Caterpillar) {
+      if (eatable.equals(Caterpillar.class)) {
         return 40;
       }
     }
 
-    if (eater instanceof Bear) {
-      if (eatable instanceof Boa) {
+    if (eater.equals(Bear.class)) {
+      if (eatable.equals(Boa.class)) {
         return 80;
       }
-      if (eatable instanceof Horse) {
+      if (eatable.equals(Horse.class)) {
         return 40;
       }
-      if (eatable instanceof Deer) {
+      if (eatable.equals(Deer.class)) {
         return 80;
       }
-      if (eatable instanceof Rabbit) {
+      if (eatable.equals(Rabbit.class)) {
         return 80;
       }
-      if (eatable instanceof Mouse) {
+      if (eatable.equals(Mouse.class)) {
         return 90;
       }
-      if (eatable instanceof Goat) {
+      if (eatable.equals(Goat.class)) {
         return 70;
       }
-      if (eatable instanceof Sheep) {
+      if (eatable.equals(Sheep.class)) {
         return 70;
       }
-      if (eatable instanceof Boar) {
+      if (eatable.equals(Boar.class)) {
         return 50;
       }
-      if (eatable instanceof Buffalo) {
+      if (eatable.equals(Buffalo.class)) {
         return 20;
       }
-      if (eatable instanceof Duck) {
+      if (eatable.equals(Duck.class)) {
         return 10;
       }
     }
 
-    if (eater instanceof Eagle) {
-      if (eatable instanceof Fox) {
+    if (eater.equals(Eagle.class)) {
+      if (eatable.equals(Fox.class)) {
         return 10;
       }
-      if (eatable instanceof Rabbit) {
+      if (eatable.equals(Rabbit.class)) {
         return 90;
       }
-      if (eatable instanceof Mouse) {
+      if (eatable.equals(Mouse.class)) {
         return 90;
       }
-      if (eatable instanceof Duck) {
+      if (eatable.equals(Duck.class)) {
         return 80;
       }
     }
 
-    if (eater instanceof Horse || eater instanceof Deer || eater instanceof Rabbit || eater instanceof Sheep
-    || eater instanceof Goat || eater instanceof Buffalo || eater instanceof Caterpillar) {
-      if (eatable instanceof Plant) {
+    if (eater.equals(Horse.class) || eater.equals(Deer.class) || eater.equals(Rabbit.class) ||
+            eater.equals(Sheep.class) || eater.equals(Goat.class) || eater.equals(Buffalo.class) ||
+                    eater.equals(Caterpillar.class)) {
+      if (eatable.equals(Plant.class)) {
         return 100;
       }
     }
 
-    if(eater instanceof Mouse || eater instanceof Boar || eater instanceof Duck ){
-      if (eatable instanceof Plant) {
+    if(eater.equals(Mouse.class) || eater.equals(Boar.class) || eater.equals(Duck.class) ){
+      if (eatable.equals(Plant.class)) {
         return 100;
       }
-      if (eatable instanceof Caterpillar) {
+      if (eatable.equals(Caterpillar.class)) {
         return 90;
       }
     }

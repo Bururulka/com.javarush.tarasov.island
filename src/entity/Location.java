@@ -58,6 +58,7 @@ public class Location {
             boaList.add(new Boa(location));
         }
         creatureMap.put(Boa.class, boaList);
+
         foxList = new ArrayList();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountFoxOnLocation); i++){
             foxList.add(new Fox(location));

@@ -19,9 +19,7 @@ public abstract class Animal extends Creature {
     // СЫТОСТЬ satiety = ? вес
     // ВЕС ЖИВОТНОГО
     // СКОРОСТЬ ПЕРЕМЕЩЕНИЯ
-    public boolean isRemove = false;
     public boolean isNew = false;
-    Settings settings = new Settings();
     Random rand = new Random();
     public Animal(double maxWeight, int maxCountInCell, int maxSpeed, double maxFood, Location location) {
         super(maxWeight, maxCountInCell, maxSpeed, maxFood, location);
@@ -54,42 +52,30 @@ public abstract class Animal extends Creature {
     }
 
     public void eat(){
-        Creature c;
+        Creature c = null;
+        double needFood = this.getNeedFood();
+        Creature creature;
         try {
-            double needFood = getNeedFood();
-
-            if (this.getClass().getSuperclass() == Herbivore.class) {
-                while (needFood > 1) {
-                c = this.creatureLocation.creatureMap.get(Plant.class).getFirst();
-                needFood = getNeedFood();
-                double foodWeight = c.getWeight();
-                double delta = Math.min(foodWeight, needFood);
-                System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
-                setWeight(getWeight() + delta, this.creatureLocation);
-                c.setWeight(foodWeight - delta, c.creatureLocation);
-                }
-            }
-
-            if (this.getClass().getSuperclass() == Predator.class) {
-                c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, true);
-                int probability = settings.getProbabilityEat(this, c);
-                int ints = rand.nextInt(0, 100);
-                if (ints <= probability) {
-                    Animal animal = (Animal) c;
-                    if (!(animal.isRemove)) {
+            while (needFood >1) {
+                c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, this, true);
+                if (!(c.isRemove)) {
+                    int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
+                    int ints = MyRandom.random(0, 100);
+                    if (ints <= probability) {
                         needFood = getNeedFood();
                         double foodWeight = c.getWeight();
                         double delta = Math.min(foodWeight, needFood);
                         setWeight(getWeight() + delta, this.creatureLocation);
                         c.setWeight(foodWeight - delta, this.creatureLocation);
                         System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
+                    } else {
+                        System.out.println(this.getClass().getSimpleName() + " никого не удалось скушать");
                     }
                 }
             }
         } catch (Exception e) {
-            return;
+//            e.printStackTrace();
         }
-
     }
 
     public void move(Direction dir){
@@ -156,7 +142,7 @@ public abstract class Animal extends Creature {
     }
 
 
-    private double getNeedFood() {
+    protected double getNeedFood() {
         return Math.min(
                 creatureMaxFood,
                 this.creatureMaxWeight - this.creatureWeight);

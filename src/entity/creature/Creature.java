@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class Creature {
+    public boolean isRemove = false;
     public double creatureMaxWeight;
     public int creatureMaxSpeed;
     public double creatureMaxFood;
@@ -53,7 +54,11 @@ public abstract class Creature {
             Animal animal = (Animal) this;
             animal.isRemove = true;
             System.out.println(this.getClass().getSimpleName() + " is die");
-            System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
+            try {
+                System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
+            } catch (Exception e) {
+                System.out.println(this.getClass().getSimpleName() + " count 0");
+            }
         }
     }
 }
