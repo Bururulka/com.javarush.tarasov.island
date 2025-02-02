@@ -69,21 +69,21 @@ public class Application {
                 }
             }
         }
-        System.out.println("Boars " + Boars +
-                " " + "Buffalos " + Buffalos +
-                " " + "Caterpillars " + Caterpillars +
-                " " + "Deers " + Deers + " " +
-                "Ducks " + Ducks + " " +
-                "Goats " + Goats + " " +
-                "Horses " + Horses + " " +
-                "Mouses " + Mouses + " " +
-                "Rabbits " + Rabbits + " " +
-                "Sheeps " + Sheeps + " " +
-                "Bears " + Bears + " " +
-                "Boas " + Boas + " " +
-                "Eagles " + Eagles + " " +
-                "Foxes " + Foxes + " " +
-                "Wolfs " + Wolfs + " " +
+        System.out.println("\uD83D\uDC17" + Boars +
+                " " + "\uD83D\uDC03" + Buffalos +
+                " " + "\uD83D\uDC1B" + Caterpillars +
+                " " + "\uD83E\uDD8C" + Deers + " " +
+                "\uD83E\uDD86" + Ducks + " " +
+                "\uD83D\uDC10" + Goats + " " +
+                "\uD83D\uDC0E" + Horses + " " +
+                "\uD83D\uDC01" + Mouses + " " +
+                "\uD83D\uDC07" + Rabbits + " " +
+                "\uD83D\uDC11" + Sheeps + " " +
+                "\uD83D\uDC3B" + Bears + " " +
+                "\uD83D\uDC0D" + Boas + " " +
+                "\uD83E\uDD85" + Eagles + " " +
+                "\uD83E\uDD8A" + Foxes + " " +
+                "\uD83D\uDC3A" + Wolfs + " " +
                 "Plants " + Plants + " " );
     }
 

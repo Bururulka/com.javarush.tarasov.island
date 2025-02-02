@@ -109,7 +109,7 @@ public abstract class Animal extends Creature {
             if (creaturesNext.size() < this.creatureMaxCountInCell){
                 creaturesNext.add(this);
                 this.creatureLocation = nextLocation;
-                this.decreaseHealth();
+                this.decreaseHealth(currentSpeed);
                 listIterator.remove();
             }
         }
@@ -140,8 +140,10 @@ public abstract class Animal extends Creature {
                 newCreatures.add(animal);
                 if (this.creatureLocation.newCreatureMap.get(this.getClass()) == null) {
                     this.creatureLocation.newCreatureMap.put(this.getClass(), newCreatures);
+                    System.out.println("Born new " + this.getClass().getName());
                 } else {
                     this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
+                    System.out.println("Born new " + this.getClass().getName());
                 }
             }
         }
@@ -158,7 +160,7 @@ public abstract class Animal extends Creature {
         }
     }
 
-    private void decreaseHealth(){
-        this.creatureWeight = this.creatureWeight - ((this.creatureWeight/100)*10);
+    private void decreaseHealth(int currentSpeed){
+        this.creatureWeight = this.creatureWeight - currentSpeed;
     }
 }
