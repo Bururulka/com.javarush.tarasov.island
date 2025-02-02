@@ -52,33 +52,45 @@ public abstract class Animal extends Creature {
     }
 
     public void eat(){
-        Creature c = null;
+
         double needFood = this.getNeedFood();
-        Creature creature;
+
         try {
-            while (needFood >1) {
-                c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, this, true);
-                if (!(c.isRemove)) {
-                    int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
-                    int ints = MyRandom.random(0, 100);
-                    if (ints <= probability) {
-                        needFood = getNeedFood();
-                        double foodWeight = c.getWeight();
-                        double delta = Math.min(foodWeight, needFood);
-                        setWeight(getWeight() + delta, this.creatureLocation);
-                        c.setWeight(foodWeight - delta, this.creatureLocation);
-                        System.out.println(this.getClass().getSimpleName() + ": eating" + c.getClass().getSimpleName());
-                    } else {
-                        System.out.println(this.getClass().getSimpleName() + " никого не удалось скушать");
-                    }
+            if (this instanceof Herbivore){
+                while(needFood > 0){
+                    toEat(needFood);
+                    needFood = this.getNeedFood();
+                }
+            } else if (this instanceof Predator){
+                if(needFood > 0){
+                   toEat(needFood);
+                   needFood = this.getNeedFood();
                 }
             }
+
         } catch (Exception e) {
-//            e.printStackTrace();
+            return;
         }
     }
 
-    public void move(Direction dir){
+    private void toEat(Double needFood){
+        Creature c = null;
+        Creature creature;
+        c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, this, true);
+        if (!(c.isRemove)) {
+            int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
+            int ints = MyRandom.random(0, 100);
+            if (ints <= probability) {
+                needFood = getNeedFood();
+                double foodWeight = c.getWeight();
+                double delta = Math.min(foodWeight, needFood);
+                setWeight(getWeight() + delta, this.creatureLocation);
+                c.setWeight(foodWeight - delta, this.creatureLocation);
+            }
+        }
+    }
+
+    public void move(Direction dir, ListIterator<Creature> listIterator){
         Location nextLocation = null;
         int currentSpeed;
         if(this.creatureMaxSpeed !=0) {
@@ -97,25 +109,20 @@ public abstract class Animal extends Creature {
             if (creaturesNext.size() < this.creatureMaxCountInCell){
                 creaturesNext.add(this);
                 this.creatureLocation = nextLocation;
-                this.isRemove = true;
                 this.decreaseHealth();
+                listIterator.remove();
             }
-        } else {
-            System.out.println(this.getClass().getSimpleName() + " не удалось никуда сходить");
         }
     }
 
 
     public void reproduce(){
         Map<Class, List<Creature>> creatureMap = this.creatureLocation.creatureMap;
-        Map<Class, List<Creature>> newCreatureMap = this.creatureLocation.newCreatureMap;
         List<Creature> newCreatures = new ArrayList<>();
         Class<? extends Creature> s = this.getClass();
         List<Creature> list = creatureMap.get(s);
-        List<Creature> newList = newCreatureMap.get(s);
         Animal animal = null;
         if (list.size() > 1){
-
             int creatureCount = 0;
 
             if (this.creatureLocation.newCreatureMap.get(this.getClass()) != null){
@@ -127,7 +134,7 @@ public abstract class Animal extends Creature {
                 try {
                     animal = createAnimal();
                 } catch (Exception e){
-
+                    animal = null;
                 }
                 animal.isNew = true;
                 newCreatures.add(animal);
@@ -136,16 +143,19 @@ public abstract class Animal extends Creature {
                 } else {
                     this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
                 }
-                System.out.println("Родился новый " + animal.getClass().getSimpleName());
             }
         }
     }
 
 
     protected double getNeedFood() {
-        return Math.min(
-                creatureMaxFood,
-                this.creatureMaxWeight - this.creatureWeight);
+        if (creatureMaxFood == 0){
+            return 0;
+        }else {
+            return Math.min(
+                    creatureMaxFood,
+                    this.creatureMaxWeight - this.creatureWeight);
+        }
     }
 
     private void decreaseHealth(){

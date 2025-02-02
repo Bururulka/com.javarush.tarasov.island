@@ -39,7 +39,13 @@ public class MyRandom {
                 Class eaterType = eater.getClass();
                 int x = Settings.getProbabilityEat(eaterType, s);
                 if (x!=0) {
-                    creatureTypesForEat.add(s.getName());
+                    Iterator<Creature> creatureIterator = creatureMap.get(s).iterator();
+                    while (creatureIterator.hasNext()) {
+                        Creature creature = creatureIterator.next();
+                        if (!creature.isRemove){
+                            creatureTypesForEat.add(s.getName());
+                        }
+                    }
                 }
             }
         }
@@ -50,6 +56,7 @@ public class MyRandom {
                 List<? extends Creature> randomList = creatureMap.get(clazz);
                 return  randomCreature = randomList.get(MyRandom.random(0, randomList.size() - 1));
             } catch (Exception e){
+                e.printStackTrace();
                 return null;
             }
         } else {

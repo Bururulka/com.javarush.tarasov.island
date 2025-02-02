@@ -40,25 +40,24 @@ public abstract class Creature {
     }
     public void setWeight(double weight, Location location) {
         this.creatureWeight = weight;
-        if (this.creatureWeight < (this.creatureMaxWeight - this.creatureMaxFood)) {
+        if (this.creatureWeight <= (this.creatureMaxWeight - this.creatureMaxFood)) {
             this.die(location);
+        }
+        if (this.creatureMaxFood == 0){
+            this.creatureWeight = weight;
+            if (this.creatureWeight == 0){
+                this.die(location);
+            }
         }
     }
     public void die(Location location){
-        List<? extends Creature> creatures = creatureLocation.creatureMap.get(this.getClass().getSimpleName());
-        if (this instanceof Plant) {
+        List<? extends Creature> creatures = creatureLocation.creatureMap.get(this.getClass());
+        if (this instanceof Plant || this instanceof Caterpillar) {
             creatures.remove(this);
-            System.out.println(this.getClass().getSimpleName() + " is die");
-            System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
-        } else if (this instanceof Animal) {
+        } else if (this instanceof Animal && !(this instanceof Caterpillar)) {
             Animal animal = (Animal) this;
             animal.isRemove = true;
-            System.out.println(this.getClass().getSimpleName() + " is die");
-            try {
-                System.out.println(this.getClass().getSimpleName() + " count" + creatures.size());
-            } catch (Exception e) {
-                System.out.println(this.getClass().getSimpleName() + " count 0");
-            }
+            System.out.println(animal.toString() + " is removed");
         }
     }
 }
