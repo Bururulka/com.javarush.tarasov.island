@@ -3,88 +3,36 @@ import entity.Location;
 import entity.creature.animal.herbivore.*;
 import entity.creature.animal.predator.*;
 import entity.creature.plant.Plant;
+import services.*;
+import util.Report;
 import util.Settings;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.*;
 
 public class Application {
     public static Island island;
     static Random rand = new Random();
     public static void main(String[] args) {
         // ТОЧКА СБОРКИ И СТАРТА МОЕГО ПРИЛОЖЕНИЯ
-        int counter = 0;
+
+        long l = System.currentTimeMillis();
 
         island = new Island(Settings.columnsCount, Settings.rowsCount);
         Location[][] locations = island.getLocations();
-        getStat(locations);
-        for (Location[] location:locations){
-            for (Location cell:location){
-                cell.AnimalsDeals();
-                getStat(locations);
-            }
-        }
+        long l1 = System.currentTimeMillis();
+        System.out.println("Время создания острова(мс): " + (l1 - l));
 
-    }
 
-    public static void getStat(Location[][] locations){
 
-        int Boars = 0;
-        int Buffalos= 0;
-        int Caterpillars= 0;
-        int Deers= 0;
-        int Ducks= 0;
-        int Goats= 0;
-        int Horses= 0;
-        int Mouses= 0;
-        int Rabbits= 0;
-        int Sheeps= 0;
-        int Bears= 0;
-        int Boas= 0;
-        int Eagles= 0;
-        int Foxes= 0;
-        int Wolfs= 0;
-        int Plants= 0;
+        //Исполнитель для запуска роста растений
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        PlantService plantService = new PlantService(island);
+        scheduledExecutorService.scheduleWithFixedDelay(plantService, 0, 1, TimeUnit.SECONDS);
+        Report report = new Report(island);
+        report.getStat();
 
-        for (Location[] location:locations){
-            for (Location cell:location){
-                Set<Class> classes = cell.creatureMap.keySet();
-                for (Class c:classes){
-                    Boars  = Boars + cell.creatureMap.get(Boar.class).size();
-                    Buffalos = Buffalos + cell.creatureMap.get(Buffalo.class).size();
-                    Caterpillars = Caterpillars + cell.creatureMap.get(Caterpillar.class).size();
-                    Deers = Deers + cell.creatureMap.get(Deer.class).size();
-                    Ducks = Ducks + cell.creatureMap.get(Duck.class).size();
-                    Goats = Goats + cell.creatureMap.get(Goat.class).size();
-                    Horses = Horses + cell.creatureMap.get(Horse.class).size();
-                    Mouses = Mouses + cell.creatureMap.get(Mouse.class).size();
-                    Rabbits = Rabbits + cell.creatureMap.get(Rabbit.class).size();
-                    Sheeps = Sheeps + cell.creatureMap.get(Sheep.class).size();
-                    Bears = Bears + cell.creatureMap.get(Bear.class).size();
-                    Boas = Boas + cell.creatureMap.get(Boa.class).size();
-                    Eagles = Eagles + cell.creatureMap.get(Eagle.class).size();
-                    Foxes = Foxes + cell.creatureMap.get(Fox.class).size();
-                    Wolfs = Wolfs + cell.creatureMap.get(Wolf.class).size();
-                    Plants = Plants + cell.creatureMap.get(Plant.class).size();
 
-                }
-            }
-        }
-        System.out.println("\uD83D\uDC17" + Boars +
-                " " + "\uD83D\uDC03" + Buffalos +
-                " " + "\uD83D\uDC1B" + Caterpillars +
-                " " + "\uD83E\uDD8C" + Deers + " " +
-                "\uD83E\uDD86" + Ducks + " " +
-                "\uD83D\uDC10" + Goats + " " +
-                "\uD83D\uDC0E" + Horses + " " +
-                "\uD83D\uDC01" + Mouses + " " +
-                "\uD83D\uDC07" + Rabbits + " " +
-                "\uD83D\uDC11" + Sheeps + " " +
-                "\uD83D\uDC3B" + Bears + " " +
-                "\uD83D\uDC0D" + Boas + " " +
-                "\uD83E\uDD85" + Eagles + " " +
-                "\uD83E\uDD8A" + Foxes + " " +
-                "\uD83D\uDC3A" + Wolfs + " " +
-                "Plants " + Plants + " " );
     }
 
 }

@@ -17,6 +17,7 @@ public abstract class Creature {
     public double creatureWeight;
     public int creatureMaxCountInCell;
     public Location creatureLocation;
+
     public Creature(double maxWeight, int maxCountInCell, int maxSpeed, double maxFood, Location location) {
             creatureMaxCountInCell = maxCountInCell;
             creatureMaxFood = maxFood;
@@ -57,7 +58,6 @@ public abstract class Creature {
         } else if (this instanceof Animal && !(this instanceof Caterpillar)) {
             Animal animal = (Animal) this;
             animal.isRemove = true;
-            System.out.println(animal.toString() + " is removed");
         }
     }
 }

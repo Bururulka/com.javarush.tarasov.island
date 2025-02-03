@@ -81,7 +81,6 @@ public abstract class Animal extends Creature {
             int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
             int ints = MyRandom.random(0, 100);
             if (ints <= probability) {
-                needFood = getNeedFood();
                 double foodWeight = c.getWeight();
                 double delta = Math.min(foodWeight, needFood);
                 setWeight(getWeight() + delta, this.creatureLocation);
@@ -103,6 +102,7 @@ public abstract class Animal extends Creature {
         nextLocation = currentLocation.getNextLocation(dir, currentSpeed);
 
         if (nextLocation != null){
+            nextLocation.getLock().lock();
             Map<Class, List<Creature>> creatureMapNext = nextLocation.creatureMap;
             List<Creature> creaturesNext = creatureMapNext.get(this.getClass());
 
@@ -112,6 +112,7 @@ public abstract class Animal extends Creature {
                 this.decreaseHealth(currentSpeed);
                 listIterator.remove();
             }
+            nextLocation.getLock().unlock();
         }
     }
 
@@ -140,10 +141,8 @@ public abstract class Animal extends Creature {
                 newCreatures.add(animal);
                 if (this.creatureLocation.newCreatureMap.get(this.getClass()) == null) {
                     this.creatureLocation.newCreatureMap.put(this.getClass(), newCreatures);
-                    System.out.println("Born new " + this.getClass().getName());
                 } else {
                     this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
-                    System.out.println("Born new " + this.getClass().getName());
                 }
             }
         }

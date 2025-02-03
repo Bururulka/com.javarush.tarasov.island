@@ -10,6 +10,7 @@ import util.MyRandom;
 import util.Settings;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 // ЛОКАЦИЯ ДОЛЖНА ЗНАТЬ ТЕКУЩЕЕ КОЛ-ВО ЖИВОТНЫХ КОНКРЕТНОГО ВИДА
 // НА СЕБЕ
@@ -41,6 +42,7 @@ public class Location {
     public Island island;
     public int x;
     public int y;
+    public ReentrantLock lock;
 
     public Location(Island island, int x, int y){
         this.island = island;
@@ -247,8 +249,11 @@ public class Location {
                 }
             }
         }
-
         return null;
+    }
+
+    public ReentrantLock getLock() {
+        return lock;
     }
 }
 
