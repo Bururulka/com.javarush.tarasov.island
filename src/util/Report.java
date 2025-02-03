@@ -14,24 +14,6 @@ public class Report {
         this.island = island;
     }
 
-//    public List<Map<String, Long>> getReport() {
-//        List<Map<String, Long>> report = new ArrayList<>();
-//        Location[][] locations = island.getLocations();
-//        for (Location[] row : locations) {
-//            for (Location location : row) {
-//                location.getLock().lock();
-//                try {
-////                report.add(location.getCreatureGroupBy());
-//                } finally {
-//                    location.getLock().unlock();
-//                }
-//            }
-//
-//
-//        }
-//        return report;
-//    }
-
     public void getStat(){
 
         int Boars = 0;

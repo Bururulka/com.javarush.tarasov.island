@@ -29,6 +29,8 @@ public class Settings {
   public final static int maxCountBoarOnLocation = 50;
   public final static int maxCountDuckOnLocation = 200;
 
+  public final static int loops = 200;
+
   private Settings(){
 
   }
