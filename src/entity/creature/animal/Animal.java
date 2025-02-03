@@ -13,6 +13,7 @@ import util.Settings;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Animal extends Creature {
     // ОБЩИЕ ХАРАКТЕРИСТИКИ
@@ -74,8 +75,7 @@ public abstract class Animal extends Creature {
     }
 
     private void toEat(Double needFood){
-        Creature c = null;
-        Creature creature;
+        Creature c;
         c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, this, true);
         if (!(c.isRemove)) {
             int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
@@ -103,14 +103,14 @@ public abstract class Animal extends Creature {
 
         if (nextLocation != null){
             nextLocation.getLock().lock();
-            Map<Class, List<Creature>> creatureMapNext = nextLocation.creatureMap;
-            List<Creature> creaturesNext = creatureMapNext.get(this.getClass());
+            Map<Class, CopyOnWriteArrayList<Creature>> creatureMapNext = nextLocation.creatureMap;
+            CopyOnWriteArrayList<Creature> creaturesNext = creatureMapNext.get(this.getClass());
 
             if (creaturesNext.size() < this.creatureMaxCountInCell){
                 creaturesNext.add(this);
                 this.creatureLocation = nextLocation;
                 this.decreaseHealth(currentSpeed);
-                listIterator.remove();
+                this.creatureLocation.creatureMap.get(this.getClass()).remove(this);
             }
             nextLocation.getLock().unlock();
         }
@@ -118,8 +118,8 @@ public abstract class Animal extends Creature {
 
 
     public void reproduce(){
-        Map<Class, List<Creature>> creatureMap = this.creatureLocation.creatureMap;
-        List<Creature> newCreatures = new ArrayList<>();
+        Map<Class, CopyOnWriteArrayList<Creature>> creatureMap = this.creatureLocation.creatureMap;
+        CopyOnWriteArrayList<Creature> newCreatures = new CopyOnWriteArrayList<>();
         Class<? extends Creature> s = this.getClass();
         List<Creature> list = creatureMap.get(s);
         Animal animal = null;
@@ -148,7 +148,6 @@ public abstract class Animal extends Creature {
         }
     }
 
-
     protected double getNeedFood() {
         if (creatureMaxFood == 0){
             return 0;
@@ -159,7 +158,14 @@ public abstract class Animal extends Creature {
         }
     }
 
-    private void decreaseHealth(int currentSpeed){
+    public void decreaseHealth(int currentSpeed){
         this.creatureWeight = this.creatureWeight - currentSpeed;
+    }
+
+    public void decreaseHealth(){
+        this.creatureWeight = this.creatureWeight - ((this.creatureWeight/100)*10);
+        if(this.creatureWeight < this.creatureMaxWeight-this.creatureMaxFood){
+            this.die(this.creatureLocation);
+        }
     }
 }

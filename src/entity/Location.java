@@ -10,6 +10,7 @@ import util.MyRandom;
 import util.Settings;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 // ЛОКАЦИЯ ДОЛЖНА ЗНАТЬ ТЕКУЩЕЕ КОЛ-ВО ЖИВОТНЫХ КОНКРЕТНОГО ВИДА
@@ -20,24 +21,24 @@ import java.util.concurrent.locks.ReentrantLock;
 // ИНИЦИАЛИЗИРОВАВ ЕЕ НА СТАРТЕ КАКИМ-ТО КОЛ-ВОМ ЖИВОТНЫХ И РАСТЕНИЙ
 
 public class Location {
-    public List wolfList;
-    public List boaList;
-    public List bearList;
-    public List foxList;
-    public List eagleList;
-    public List plantList;
-    public List horseList;
-    public List boarList;
-    public List buffaloList;
-    public List caterpillarList;
-    public List deerList;
-    public List duckList;
-    public List goatList;
-    public List mouseList;
-    public List rabbitList;
-    public List sheepList;
-    public Map<Class, List<Creature>>creatureMap = new HashMap<>();
-    public Map<Class, List<Creature>>newCreatureMap = new HashMap<>();
+//    public List wolfList;
+//    public List boaList;
+//    public List bearList;
+//    public List foxList;
+//    public List eagleList;
+//    public List plantList;
+//    public List horseList;
+//    public List boarList;
+//    public List buffaloList;
+//    public List caterpillarList;
+//    public List deerList;
+//    public List duckList;
+//    public List goatList;
+//    public List mouseList;
+//    public List rabbitList;
+//    public List sheepList;
+    public Map<Class, CopyOnWriteArrayList<Creature>>creatureMap = new HashMap<>();
+    public Map<Class, CopyOnWriteArrayList<Creature>>newCreatureMap = new HashMap<>();
     public Map<Class, List<Creature>>removeCreatureMap = new HashMap<>();
     public Island island;
     public int x;
@@ -49,160 +50,106 @@ public class Location {
         this.x = x;
         this.y = y;
         Location location = this;
+        lock = new ReentrantLock();
 
-        wolfList = new ArrayList();
+        CopyOnWriteArrayList<Creature>wolfList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountWolfOnLocation); i++){
             wolfList.add(new Wolf(location));
         }
         creatureMap.put(Wolf.class, wolfList);
 
-        boaList = new ArrayList();
+        CopyOnWriteArrayList<Creature>boaList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountBoaOnLocation); i++){
             boaList.add(new Boa(location));
         }
         creatureMap.put(Boa.class, boaList);
 
-        foxList = new ArrayList();
+        CopyOnWriteArrayList<Creature>foxList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountFoxOnLocation); i++){
             foxList.add(new Fox(location));
         }
         creatureMap.put(Fox.class, foxList);
 
-        bearList = new ArrayList();
+        CopyOnWriteArrayList<Creature>bearList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountBearOnLocation); i++){
             bearList.add(new Bear(location));
         }
         creatureMap.put(Bear.class, bearList);
 
-        eagleList = new ArrayList();
+        CopyOnWriteArrayList<Creature>eagleList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0, Settings.maxCountEagleOnLocation); i++){
             eagleList.add(new Eagle(location));
         }
         creatureMap.put(Eagle.class, eagleList);
 
 
-        plantList = new ArrayList();
+        CopyOnWriteArrayList<Creature>plantList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < Settings.maxCountPlantOnLocation; i++){
             plantList.add(new Plant(location));
         }
         creatureMap.put(Plant.class, plantList);
 
 
-        horseList = new ArrayList();
+        CopyOnWriteArrayList<Creature>horseList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountHorseOnLocation); i++){
             horseList.add(new Horse(location));
         }
         creatureMap.put(Horse.class, horseList);
 
-        deerList = new ArrayList();
+        CopyOnWriteArrayList<Creature>deerList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountDeerOnLocation); i++){
             deerList.add(new Horse(location));
         }
         creatureMap.put(Deer.class, deerList);
 
-        rabbitList = new ArrayList();
+        CopyOnWriteArrayList<Creature>rabbitList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountRabbitOnLocation); i++){
             rabbitList.add(new Rabbit(location));
         }
         creatureMap.put(Rabbit.class, rabbitList);
 
-        mouseList = new ArrayList();
+        CopyOnWriteArrayList<Creature>mouseList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountMouseOnLocation); i++){
             mouseList.add(new Mouse(location));
         }
         creatureMap.put(Mouse.class, mouseList);
 
-        goatList = new ArrayList();
+        CopyOnWriteArrayList<Creature>goatList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountGoatOnLocation); i++){
             goatList.add(new Goat(location));
         }
         creatureMap.put(Goat.class, goatList);
 
-        sheepList = new ArrayList();
+        CopyOnWriteArrayList<Creature>sheepList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountSheepOnLocation); i++){
             sheepList.add(new Sheep(location));
         }
         creatureMap.put(Sheep.class, sheepList);
 
-        boarList = new ArrayList();
+        CopyOnWriteArrayList<Creature>boarList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountBoarOnLocation); i++){
             boarList.add(new Boar(location));
         }
         creatureMap.put(Boar.class, boarList);
 
-        buffaloList = new ArrayList();
+        CopyOnWriteArrayList<Creature>buffaloList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountBuffaloOnLocation); i++){
             buffaloList.add(new Buffalo(location));
         }
         creatureMap.put(Buffalo.class, buffaloList);
-        duckList = new ArrayList();
+        CopyOnWriteArrayList<Creature>duckList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountDuckOnLocation); i++){
             duckList.add(new Duck(location));
         }
         creatureMap.put(Duck.class, duckList);
 
-        caterpillarList = new ArrayList();
+        CopyOnWriteArrayList<Creature>caterpillarList = new CopyOnWriteArrayList<>();
         for (int i = 0; i < MyRandom.random(0,Settings.maxCountCaterpillarOnLocation); i++){
             caterpillarList.add(new Caterpillar(location));
         }
         creatureMap.put(Caterpillar.class, caterpillarList);
     }
 
-    public void AnimalsDeals(){
-
-        Iterator<Map.Entry<Class, List<Creature>>>creatureIterator = creatureMap.entrySet().iterator();
-
-        while (creatureIterator.hasNext()){
-            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
-            List<Creature> creatures = creature.getValue();
-            ListIterator<Creature> listIterator = creatures.listIterator();
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if (animal.isRemove) {
-                        animal.isRemove = false;
-                    }
-                }
-            }
-            listIterator = creatures.listIterator();
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if(animal.isRemove){
-                        animal.isRemove = false;
-                    }
-                    animal.isNew = false;
-                    animal.eat();
-                    animal.reproduce();
-                    animal.move(MyRandom.getRandomDirection(), listIterator);
-                }
-            }
-
-        }
-
-        creatureIterator = creatureMap.entrySet().iterator();
-        while (creatureIterator.hasNext()){
-            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
-            List<Creature> creatures = creature.getValue();
-            ListIterator<Creature> listIterator = creatures.listIterator();
-
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if(animal.isRemove){
-                        listIterator.remove();
-                    }
-                }
-            }
-
-        }
-
-        creatureMap.putAll(newCreatureMap);
-
-    }
     public Location getNextLocation(Direction direction, int speed){
 
         Location currentLocation = this;

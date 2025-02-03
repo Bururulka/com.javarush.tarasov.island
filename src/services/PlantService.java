@@ -19,11 +19,14 @@ public class PlantService implements Runnable{
                 location.getLock().lock();
             try {
                 int needPlants = Settings.maxCountPlantOnLocation - location.creatureMap.get(Plant.class).size();
-                int rand = MyRandom.random(0,needPlants);
-                for (int i = 0; i < rand; i++) {
-                    Plant newPlant = new Plant(location);
-                    location.creatureMap.get(Plant.class).add(newPlant);
+                if (needPlants > 0) {
+                    int rand = MyRandom.random(0,needPlants/3);
+                    for (int i = 0; i < rand; i++) {
+                        Plant newPlant = new Plant(location);
+                        location.creatureMap.get(Plant.class).add(newPlant);
+                    }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

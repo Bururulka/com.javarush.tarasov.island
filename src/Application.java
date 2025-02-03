@@ -31,14 +31,14 @@ public class Application {
         ExecutorService executorService = Executors.newFixedThreadPool(8);
         for (int i = 0; i < Settings.loops; i++) {
             List<Future<?>> futureList = new ArrayList<>();
-            //Хапускаем таски и собираем фьючеры для отслеживания оконцания "дня" жизенного цикла
+            //Запускаем таски и собираем фьючеры для отслеживания оконцания "дня" жизенного цикла
             locationsList.forEach(x -> futureList.add(executorService.submit(new LocationService(island, (Location) x))));
             if (!futureList.isEmpty()) {
                 //ожидание завершения последнего фьючера
                 while (!futureList.get(futureList.size()-1).isDone()) {
                     try {
-                        long count = futureList.stream().filter(Future::isDone).count();
-                        System.out.print("\rwaiting " + ((count * 100)/(Settings.columnsCount * Settings.rowsCount)) + "%");
+//                        long count = futureList.stream().filter(Future::isDone).count();
+//                        System.out.print("\rwaiting " + ((count * 100)/(Settings.columnsCount * Settings.rowsCount)) + "%");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);

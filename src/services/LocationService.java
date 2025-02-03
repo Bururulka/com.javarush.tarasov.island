@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocationService implements Runnable{
     private  Island island;
@@ -29,11 +30,11 @@ public class LocationService implements Runnable{
     }
 
     private void life() throws Exception {
-
-        Iterator<Map.Entry<Class, List<Creature>>> creatureIterator = this.location.creatureMap.entrySet().iterator();
+        location.getLock().lock();
+        Iterator<Map.Entry<Class, CopyOnWriteArrayList<Creature>>> creatureIterator = this.location.creatureMap.entrySet().iterator();
 
         while (creatureIterator.hasNext()){
-            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
+            Map.Entry<Class, CopyOnWriteArrayList<Creature>> creature = creatureIterator.next();
             List<Creature> creatures = creature.getValue();
             ListIterator<Creature> listIterator = creatures.listIterator();
             while (listIterator.hasNext()) {
@@ -57,30 +58,12 @@ public class LocationService implements Runnable{
                     animal.eat();
                     animal.reproduce();
                     animal.move(MyRandom.getRandomDirection(), listIterator);
+                    animal.decreaseHealth();
                 }
             }
-
-        }
-
-        creatureIterator = this.location.creatureMap.entrySet().iterator();
-        while (creatureIterator.hasNext()){
-            Map.Entry<Class, List<Creature>> creature = creatureIterator.next();
-            List<Creature> creatures = creature.getValue();
-            ListIterator<Creature> listIterator = creatures.listIterator();
-
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if(animal.isRemove){
-                        listIterator.remove();
-                    }
-                }
-            }
-
         }
 
         this.location.creatureMap.putAll(this.location.newCreatureMap);
-
+        location.getLock().unlock();
     }
 }

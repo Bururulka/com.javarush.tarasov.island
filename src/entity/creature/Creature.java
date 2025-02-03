@@ -8,6 +8,7 @@ import util.MyRandom;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Creature {
     public boolean isRemove = false;
@@ -52,12 +53,11 @@ public abstract class Creature {
         }
     }
     public void die(Location location){
-        List<? extends Creature> creatures = creatureLocation.creatureMap.get(this.getClass());
+        CopyOnWriteArrayList<Creature> creatures = creatureLocation.creatureMap.get(this.getClass());
         if (this instanceof Plant || this instanceof Caterpillar) {
             creatures.remove(this);
         } else if (this instanceof Animal && !(this instanceof Caterpillar)) {
-            Animal animal = (Animal) this;
-            animal.isRemove = true;
+            creatures.remove(this);
         }
     }
 }
