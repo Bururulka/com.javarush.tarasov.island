@@ -102,17 +102,21 @@ public abstract class Animal extends Creature {
         nextLocation = currentLocation.getNextLocation(dir, currentSpeed);
 
         if (nextLocation != null){
-            nextLocation.getLock().lock();
-            Map<Class, CopyOnWriteArrayList<Creature>> creatureMapNext = nextLocation.creatureMap;
-            CopyOnWriteArrayList<Creature> creaturesNext = creatureMapNext.get(this.getClass());
+//            nextLocation.getLock().lock();
+//            Map<Class, CopyOnWriteArrayList<Creature>> creatureMapNext = nextLocation.creatureMap;
+//            CopyOnWriteArrayList<Creature> creaturesNext = creatureMapNext.get(this.getClass());
 
-            if (creaturesNext.size() < this.creatureMaxCountInCell){
-                creaturesNext.add(this);
-                this.creatureLocation = nextLocation;
-                this.decreaseHealth(currentSpeed);
-                this.creatureLocation.creatureMap.get(this.getClass()).remove(this);
+//            if (creaturesNext.size() < this.creatureMaxCountInCell){
+//                creaturesNext.add(this);
+//                this.creatureLocation = nextLocation;
+//                this.decreaseHealth(currentSpeed);
+//                this.creatureLocation.creatureMap.get(this.getClass()).remove(this);
+//            }
+//            nextLocation.getLock().unlock();
+            if(nextLocation.addCreature(this)){
+                currentLocation.removeCreature(this);
             }
-            nextLocation.getLock().unlock();
+
         }
     }
 

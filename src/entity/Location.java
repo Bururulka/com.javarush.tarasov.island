@@ -21,25 +21,9 @@ import java.util.concurrent.locks.ReentrantLock;
 // ИНИЦИАЛИЗИРОВАВ ЕЕ НА СТАРТЕ КАКИМ-ТО КОЛ-ВОМ ЖИВОТНЫХ И РАСТЕНИЙ
 
 public class Location {
-//    public List wolfList;
-//    public List boaList;
-//    public List bearList;
-//    public List foxList;
-//    public List eagleList;
-//    public List plantList;
-//    public List horseList;
-//    public List boarList;
-//    public List buffaloList;
-//    public List caterpillarList;
-//    public List deerList;
-//    public List duckList;
-//    public List goatList;
-//    public List mouseList;
-//    public List rabbitList;
-//    public List sheepList;
+
     public Map<Class, CopyOnWriteArrayList<Creature>>creatureMap = new HashMap<>();
     public Map<Class, CopyOnWriteArrayList<Creature>>newCreatureMap = new HashMap<>();
-    public Map<Class, List<Creature>>removeCreatureMap = new HashMap<>();
     public Island island;
     public int x;
     public int y;
@@ -152,7 +136,6 @@ public class Location {
 
     public Location getNextLocation(Direction direction, int speed){
 
-        Location currentLocation = this;
         Location[][] locations = this.island.getLocations();
 
         for(int i = 0; i < speed; i++){
@@ -197,6 +180,36 @@ public class Location {
             }
         }
         return null;
+    }
+
+    public boolean addCreature(Creature creature){
+        lock.lock();
+        try {
+            Class clazz = creature.getClass();
+            if (creature.creatureMaxCountInCell < this.creatureMap.get(clazz).size()) {
+                this.creatureMap.get(clazz).add(creature);
+                return true;
+            }
+        }catch (Exception e){
+           e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+        return false;
+    }
+
+    public void removeCreature(Creature creature){
+        lock.lock();
+        try {
+            Class clazz = creature.getClass();
+            if (creatureMap.get(clazz).contains(creature)) {
+                creatureMap.get(clazz).remove(creature);
+            }
+        }catch (Exception e){
+        e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public ReentrantLock getLock() {

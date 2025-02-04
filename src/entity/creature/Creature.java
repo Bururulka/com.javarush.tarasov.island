@@ -42,22 +42,22 @@ public abstract class Creature {
     }
     public void setWeight(double weight, Location location) {
         this.creatureWeight = weight;
-        if (this.creatureWeight <= (this.creatureMaxWeight - this.creatureMaxFood)) {
-            this.die(location);
+        if ((this.creatureWeight <= (this.creatureMaxWeight - this.creatureMaxFood)) && this.creatureMaxFood != 0) {
+            location.removeCreature(this);
         }
         if (this.creatureMaxFood == 0){
             this.creatureWeight = weight;
             if (this.creatureWeight == 0){
-                this.die(location);
+                location.removeCreature(this);
             }
         }
     }
     public void die(Location location){
         CopyOnWriteArrayList<Creature> creatures = creatureLocation.creatureMap.get(this.getClass());
         if (this instanceof Plant || this instanceof Caterpillar) {
-            creatures.remove(this);
+            location.removeCreature(this);
         } else if (this instanceof Animal && !(this instanceof Caterpillar)) {
-            creatures.remove(this);
+            location.removeCreature(this);
         }
     }
 }

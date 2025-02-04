@@ -30,7 +30,7 @@ public class LocationService implements Runnable{
     }
 
     private void life() throws Exception {
-        location.getLock().lock();
+//        location.getLock().lock();
         Iterator<Map.Entry<Class, CopyOnWriteArrayList<Creature>>> creatureIterator = this.location.creatureMap.entrySet().iterator();
 
         while (creatureIterator.hasNext()){
@@ -63,7 +63,7 @@ public class LocationService implements Runnable{
             }
         }
 
-        this.location.creatureMap.putAll(this.location.newCreatureMap);
-        location.getLock().unlock();
+//        this.location.creatureMap.putAll(this.location.newCreatureMap);
+//        location.getLock().unlock();
     }
 }
