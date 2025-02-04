@@ -52,7 +52,12 @@ public class MyRandom {
             try {
                 Class clazz = Class.forName(creatureType);
                 CopyOnWriteArrayList<Creature> randomList = creatureMap.get(clazz);
-                return  randomCreature = randomList.get(MyRandom.random(0, randomList.size() - 1));
+                if (randomList.size()>1){
+                    return  randomCreature = randomList.get(MyRandom.random(0, randomList.size() - 1));
+                } else {
+                    return null;
+                }
+
             } catch (Exception e){
                 e.printStackTrace();
                 return null;
