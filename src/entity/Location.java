@@ -186,7 +186,7 @@ public class Location {
         lock.lock();
         try {
             Class clazz = creature.getClass();
-            if (creature.creatureMaxCountInCell < this.creatureMap.get(clazz).size()) {
+            if (creature.creatureMaxCountInCell > this.creatureMap.get(clazz).size()) {
                 this.creatureMap.get(clazz).add(creature);
                 return true;
             }

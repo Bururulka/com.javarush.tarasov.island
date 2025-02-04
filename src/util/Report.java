@@ -36,7 +36,6 @@ public class Report {
 
         for (Location[] location:locations){
             for (Location cell:location){
-                cell.getLock().lock();
                 Set<Class> classes = cell.creatureMap.keySet();
                 for (Class c:classes){
                     Boars  = Boars + cell.creatureMap.get(Boar.class).size();
@@ -57,7 +56,6 @@ public class Report {
                     Plants = Plants + cell.creatureMap.get(Plant.class).size();
 
                 }
-                cell.getLock().unlock();
             }
         }
         System.out.println("\uD83D\uDC17" + Boars +

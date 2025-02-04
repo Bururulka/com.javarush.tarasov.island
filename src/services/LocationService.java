@@ -6,10 +6,7 @@ import entity.creature.Creature;
 import entity.creature.animal.Animal;
 import util.MyRandom;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocationService implements Runnable{
@@ -30,40 +27,20 @@ public class LocationService implements Runnable{
     }
 
     private void life() throws Exception {
-//        location.getLock().lock();
-        Iterator<Map.Entry<Class, CopyOnWriteArrayList<Creature>>> creatureIterator = this.location.creatureMap.entrySet().iterator();
 
-        while (creatureIterator.hasNext()){
-            Map.Entry<Class, CopyOnWriteArrayList<Creature>> creature = creatureIterator.next();
-            List<Creature> creatures = creature.getValue();
-            ListIterator<Creature> listIterator = creatures.listIterator();
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if (animal.isRemove) {
-                        animal.isRemove = false;
-                    }
-                }
-            }
-            listIterator = creatures.listIterator();
-            while (listIterator.hasNext()) {
-                Creature curentCreature = listIterator.next();
-                if (curentCreature instanceof Animal) {
-                    Animal animal = (Animal) curentCreature;
-                    if(animal.isRemove){
-                        animal.isRemove = false;
-                    }
-                    animal.isNew = false;
+        Set<Class> classes = location.creatureMap.keySet();
+        for(Class clazz: classes){
+            for(Creature currentCreature: location.creatureMap.get(clazz)){
+                if (currentCreature instanceof Animal) {
+                    Animal animal = (Animal) currentCreature;
                     animal.eat();
                     animal.reproduce();
-                    animal.move(MyRandom.getRandomDirection(), listIterator);
+                    animal.move(MyRandom.getRandomDirection() );
                     animal.decreaseHealth();
                 }
             }
         }
 
-//        this.location.creatureMap.putAll(this.location.newCreatureMap);
-//        location.getLock().unlock();
+
     }
 }

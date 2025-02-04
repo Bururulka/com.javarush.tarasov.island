@@ -14,10 +14,10 @@ public class Application {
         Location[][] locations = island.getLocations();
         long l1 = System.currentTimeMillis();
         System.out.println("Время создания острова(мс): " + (l1 - l));
-        List locationsList = new ArrayList();
-        for (Location[] row : locations) {
-            locationsList.addAll(Arrays.asList(row));
-        }
+//        List locationsList = new ArrayList();
+//        for (Location[] row : locations) {
+//            locationsList.addAll(Arrays.asList(row));
+//        }
 
         //Исполнитель для запуска роста растений
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -26,25 +26,22 @@ public class Application {
 
         StatService statService = new StatService(island);
 
-
-
         ExecutorService executorService = Executors.newFixedThreadPool(8);
         for (int i = 0; i < Settings.loops; i++) {
             List<Future<?>> futureList = new ArrayList<>();
-            //Запускаем таски и собираем фьючеры для отслеживания оконцания "дня" жизенного цикла
-            locationsList.forEach(x -> futureList.add(executorService.submit(new LocationService(island, (Location) x))));
+            for(Location[] location : locations){
+                for( Location cell : location){
+                    futureList.add(executorService.submit(new LocationService(island, cell)));
+                }
+            }
             if (!futureList.isEmpty()) {
-                //ожидание завершения последнего фьючера
                 while (!futureList.get(futureList.size()-1).isDone()) {
                     try {
-//                        long count = futureList.stream().filter(Future::isDone).count();
-//                        System.out.print("\rwaiting " + ((count * 100)/(Settings.columnsCount * Settings.rowsCount)) + "%");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                //запуск таски отчета
                 executorService.submit(statService);
             }
         }
