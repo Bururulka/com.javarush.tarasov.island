@@ -32,12 +32,11 @@ public class Report {
         int Foxes= 0;
         int Wolfs= 0;
         int Plants= 0;
-        Location[][] locations = this.island.getLocations();
+        Location[][] locations = island.getLocations();
 
         for (Location[] location:locations){
             for (Location cell:location){
-                Set<Class> classes = cell.creatureMap.keySet();
-                for (Class c:classes){
+                cell.lock.lock();
                     Boars  = Boars + cell.creatureMap.get(Boar.class).size();
                     Buffalos = Buffalos + cell.creatureMap.get(Buffalo.class).size();
                     Caterpillars = Caterpillars + cell.creatureMap.get(Caterpillar.class).size();
@@ -54,8 +53,7 @@ public class Report {
                     Foxes = Foxes + cell.creatureMap.get(Fox.class).size();
                     Wolfs = Wolfs + cell.creatureMap.get(Wolf.class).size();
                     Plants = Plants + cell.creatureMap.get(Plant.class).size();
-
-                }
+                cell.lock.unlock();
             }
         }
         System.out.println("\uD83D\uDC17" + Boars +

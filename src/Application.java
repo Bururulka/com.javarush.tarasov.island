@@ -1,6 +1,7 @@
 import entity.Island;
 import entity.Location;
 import services.*;
+import util.Report;
 import util.Settings;
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,6 +15,10 @@ public class Application {
         Location[][] locations = island.getLocations();
         long l1 = System.currentTimeMillis();
         System.out.println("Время создания острова(мс): " + (l1 - l));
+        System.out.println("Начальное количество создаий");
+        Report report = new Report(island);
+        report.getStat();
+        System.out.println("вот");
 //        List locationsList = new ArrayList();
 //        for (Location[] row : locations) {
 //            locationsList.addAll(Arrays.asList(row));
@@ -30,7 +35,7 @@ public class Application {
         for (int i = 0; i < Settings.loops; i++) {
             List<Future<?>> futureList = new ArrayList<>();
             for(Location[] location : locations){
-                for( Location cell : location){
+                for(Location cell : location){
                     futureList.add(executorService.submit(new LocationService(island, cell)));
                 }
             }

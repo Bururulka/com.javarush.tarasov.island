@@ -77,15 +77,13 @@ public abstract class Animal extends Creature {
     private void toEat(Double needFood){
         Creature c;
         c = MyRandom.getRandomCreature(this.creatureLocation.creatureMap, this, true);
-        if (!(c.isRemove)) {
-            int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
-            int ints = MyRandom.random(0, 100);
-            if (ints <= probability) {
-                double foodWeight = c.getWeight();
-                double delta = Math.min(foodWeight, needFood);
-                setWeight(getWeight() + delta, this.creatureLocation);
-                c.setWeight(foodWeight - delta, this.creatureLocation);
-            }
+        int probability = Settings.getProbabilityEat(this.getClass(), c.getClass());
+        int ints = MyRandom.random(0, 100);
+        if (ints <= probability) {
+            double foodWeight = c.getWeight();
+            double delta = Math.min(foodWeight, needFood);
+            setWeight(getWeight() + delta, this.creatureLocation);
+            c.setWeight(foodWeight - delta, this.creatureLocation);
         }
     }
 
@@ -125,17 +123,18 @@ public abstract class Animal extends Creature {
             }
             if  ( creatureCount < this.creatureMaxCountInCell) {
                 try {
-                    animal = createAnimal();
+                    if(MyRandom.get(50)) {
+                        animal = createAnimal();
+                        this.creatureLocation.creatureMap.get(this.getClass()).add(animal);
+                    }
                 } catch (Exception e){
                     animal = null;
                 }
-                animal.isNew = true;
-                newCreatures.add(animal);
-                if (this.creatureLocation.newCreatureMap.get(this.getClass()) == null) {
-                    this.creatureLocation.newCreatureMap.put(this.getClass(), newCreatures);
-                } else {
-                    this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
-                }
+//                if (this.creatureLocation.newCreatureMap.get(this.getClass()) == null) {
+//                    this.creatureLocation.newCreatureMap.put(this.getClass(), newCreatures);
+//                } else {
+//                    this.creatureLocation.newCreatureMap.get(this.getClass()).addAll(newCreatures);
+//                }
             }
         }
     }

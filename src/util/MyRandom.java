@@ -39,25 +39,6 @@ public class MyRandom {
         String creatureType;
         int minSize = 0;
 
-//        Iterator<Class> iterator = creatureTypes.iterator();
-//        while (iterator.hasNext()) {
-//            s = iterator.next();
-//            if (creatureMap.get(s).size()>1){
-//                minSize = creatureMap.get(s).size();
-//                Class eaterType = eater.getClass();
-//                int x = Settings.getProbabilityEat(eaterType, s);
-//                if (x!=0) {
-//                    Iterator<Creature> creatureIterator = creatureMap.get(s).iterator();
-//                    while (creatureIterator.hasNext()) {
-//                        Creature creature = creatureIterator.next();
-//                        if (!creature.isRemove){
-//                            creatureTypesForEat.add(s.getName());
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
         for(Class map : creatureTypes){
             if (creatureMap.get(map).size()>1){
                 if((Settings.getProbabilityEat(eaterType,map)) != 0){
